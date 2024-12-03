@@ -21,20 +21,32 @@
   },
   "homepage": "https://github.com/mohammedShafaz/raftLabs-test#readme",
   "dependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "express-graphql": "^0.12.0",
+    "graphql": "^15.9.0",
+    "graphql-subscriptions": "^2.0.0",
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.11.0",
     "mongoose": "^8.8.3",
     "nodemon": "^3.1.7",
+    "socket.io": "^4.8.1",
+    "subscriptions-transport-ws": "^0.11.0",
     "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
+    "@types/dotenv": "^8.2.3",
     "@types/express": "^5.0.0",
+    "@types/graphql": "^14.5.0",
     "@types/helmet": "^4.0.0",
-    "@types/jsonwebtoken": "^9.0.7"
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/ws": "^8.5.13",
+    "typescript": "^5.7.2"
   }
 }

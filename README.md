@@ -1,17 +1,43 @@
 # raftLabs-test
 
-Task 1: Build a GraphQL API with TypeScript
+# Setup Instructions
 
-Objective: Assess your ability to create a robust GraphQL API with TypeScript,
-emphasizing clean and maintainable code.
+1. Clone the repository:
 
-Requirements:
+```bash
+git clone https://github.com/mohammedShafaz/raftLabs-test.git
+cd raftLabs-test
+```
 
-1. Develop a GraphQL API using Node.js and Express.js.
-2. Utilize TypeScript to write clean and strongly typed code.
-3. Implement authentication and authorization using JWT tokens.
-4. Ensure input validation and error handling for data integrity and security.
-5. Integrate the API with a database like MongoDB or PostgreSQL using an
-ORM (Sequelize or Mongoose).
-6. Utilize caching for frequently accessed resources to improve performance.
-7. Use TypeScript for your GraphQL schema and resolvers.
+2. Configure Environment Variables
+
+```bash
+cp .env.sample .env
+npm install
+```
+
+3. Install Dependencies
+
+```bash
+npm install
+```
+
+4. Run the Application
+
+For Development:
+
+```bash
+npm run dev
+```
+
+For Production:
+
+```bash
+npm run build
+```
+
+Start the server:
+
+```bash
+npm run start
+```
