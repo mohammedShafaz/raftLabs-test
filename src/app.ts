@@ -9,18 +9,25 @@ import { schema } from "./graphql/schema";
 import { resolvers } from "./graphql/resolvers";
 import { initializeSocketServer } from "./socket";
 import { verifyToken } from "./utils/auth";
-import {  WebSocketServer } from 'ws';
+import { WebSocket } from 'ws';
+import { PubSub } from "graphql-subscriptions";
+import { SubscriptionServer } from "subscriptions-transport-ws";
+import { execute, subscribe } from "graphql";
 export class App {
     private app: Express;
     private port: number;
     private server: http.Server
+    private pubsub: PubSub;
     constructor() {
         this.app = express();
         this.port = this.getPort();
         this.server = http.createServer(this.app);
+        this.pubsub = new PubSub();
         this.setupMiddleware();
         this.setupDatabase();
         this.setUpGraphQL();
+        this.setUpWebSocket()
+
         this.setUpSocketIo();
     }
 
@@ -62,20 +69,43 @@ export class App {
                 return {
                     schema,
                     rootValue: resolvers,
-                    graphiql: true,
-                    context: { user },
+                    graphiql: {
+                        headerEditorEnabled: true
+                    },
+                    context: { user, pubsub: this.pubsub },
                 };
             } catch (error) {
                 console.error('GraphQL authentication error:', error);
                 throw new Error('Authentication failed.');
             }
         }));
-    }
 
+    }
+    private setUpWebSocket(): void {
+        const wsServer = new WebSocket.Server({
+            server: this.server,
+            path: '/subscriptions',
+        });
+
+        SubscriptionServer.create({
+            schema,
+            execute,
+            subscribe,
+            onConnect: () => {
+                console.log("WebSocket connected for subscriptions");
+                return { pubsub: this.pubsub };
+            },
+            onDisconnect: () => {
+                console.log("WebSocket disconnected");
+            },
+
+        }, wsServer)
+    }
 
     public start(): void {
         this.server.listen(this.port, () => {
             console.log(`GraphQL server running at http://localhost:${this.port}/graphql `);
+            console.log(`WebSocket subscriptions running at ws://localhost:${this.port}/subscriptions`);
 
         });
 

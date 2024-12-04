@@ -2,8 +2,6 @@ import { GraphQLID, GraphQLString } from "graphql";
 import { MessageType } from "../schemas/message.type";
 import { PubSub } from "graphql-subscriptions";
 import Message from "../../models/message.model";
-import mongoose from "mongoose";
-import { ObjectId } from "mongodb";
 
 const pubsub = new PubSub();
 
@@ -33,6 +31,7 @@ export const sendMessage = {
   resolve: async (parent: any, { content, roomId, receiverId }: { content: string; roomId: string; receiverId?: string }, context: any, info: unknown) => {
     try {
       const user = context.user;
+``      
       if (!user) {
         throw new Error("User is not authenticated");
       }
@@ -49,10 +48,10 @@ export const sendMessage = {
 
       const savedMessage = await newMessage.save();
 
-      pubsub.publish("MESSAGE_ADDED", {
+      pubsub.publish(`MESSAGE_ADDED_${roomId}`, {
         messageAdded: savedMessage,
-      });
-
+    });
+    
       return savedMessage;
     } catch (error) {
       console.error("Error sending message:", error)
@@ -71,8 +70,14 @@ export const messageResolvers = {
   Subscription: {
     messageAdded: {
       type: MessageType,
-      resolve: (payload: any) => payload,
-      subscribe: () => pubsub.asyncIterator(["MESSAGE_ADDED"]),
+      args: {
+        roomId: { type: GraphQLID },
+      },
+      subscribe: (_: any, { roomId }: { roomId: string }) => {
+        if (!roomId) throw new Error("Room ID is required for subscription");
+        return pubsub.asyncIterator([`MESSAGE_ADDED_${roomId}`]);
+      },
+      resolve: (payload: any) => payload.messageAdded,
     },
   },
 };

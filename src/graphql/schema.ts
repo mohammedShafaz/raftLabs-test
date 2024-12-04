@@ -71,4 +71,19 @@ export const schema = new GraphQLSchema({
             }
         }
     }),
+    subscription: new GraphQLObjectType({
+        name: "Subscription",
+        fields: {
+            messageAdded: {
+                type: MessageType,
+                args: { roomId: { type: GraphQLID } },
+                subscribe: (parent, { roomId }, { pubsub }) => {
+                    return pubsub.asyncIterator(`MESSAGE_ADDED_${roomId}`);
+                },
+                resolve: (payload) => {
+                    return payload.messageAdded;
+                },
+            },
+        },
+    }),
 })

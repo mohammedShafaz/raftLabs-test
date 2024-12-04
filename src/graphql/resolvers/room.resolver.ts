@@ -36,7 +36,7 @@ export const createRoom = {
       const savedRoom = await newRoom.save();
       return savedRoom;
     } catch (error) {
-      throw new Error("Error creating room");
+      throw error;
     }
   },
 };
